@@ -292,6 +292,9 @@ public class InventoryController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
+
+        //Check bug of filtering the value
+
         /*
         //Creating a graphic (image)
         Image img = new Image(getClass().getResourceAsStream("/Assignment/AddItemImage.png"));

@@ -56,48 +56,50 @@ public class ModifyItemController {
             }
             //If there isn't any error in the name; let save this new name
             else{
-                 NewName = ModifiedNameItem.getText();
-                 check = true;
+                NewName = ModifiedNameItem.getText();
+                check = true;
             }
         }
-         if(ModifiedPriceItem.getText().isEmpty() == false){
-             if(ModifiedPriceItem.getText().matches("[a-zA-Z]")) {
-                 alert.setTitle("Error!");
-                 alert.setContentText("Error! The price field has characters; it has to be only numbers");
-                 alert.showAndWait();
-                 ModifiedPriceItem.clear();
-                 check = false;
-             }
-             else{
-                 NewPrice = "$" + ModifiedPriceItem.getText();
-                 check = true;
-             }
+        if(ModifiedPriceItem.getText().isEmpty() == false){
+            if(ModifiedPriceItem.getText().matches("[a-zA-Z]")) {
+                alert.setTitle("Error!");
+                alert.setContentText("Error! The price field has characters; it has to be only numbers");
+                alert.showAndWait();
+                ModifiedPriceItem.clear();
+                check = false;
+            }
+            else{
+                NewPrice = "$" + ModifiedPriceItem.getText();
+                check = true;
+            }
         }
-         if(ModifiedSerialItem.getText().isEmpty() == false){
-             NewSerial = ModifiedSerialItem.getText();
-             check = true;
+        if(ModifiedSerialItem.getText().isEmpty() == false){
+            NewSerial = ModifiedSerialItem.getText();
+            check = true;
 
-         }
-         if(ModifiedNameItem.getText().isEmpty() && ModifiedPriceItem.getText().isEmpty() && ModifiedSerialItem.getText().isEmpty()){
-             alert.setTitle("Error!");
-             alert.setContentText("Error! There is nothing new to modify!");
-             alert.showAndWait();
-             check = false;
-         }
+        }
+        if(ModifiedNameItem.getText().isEmpty() && ModifiedPriceItem.getText().isEmpty() && ModifiedSerialItem.getText().isEmpty()){
+            alert.setTitle("Error!");
+            alert.setContentText("Error! There is nothing new to modify!");
+            alert.showAndWait();
+            check = false;
+        }
 
-         //If passes all the test cases, and there is not problems; we are ready to modify the item
-         if(check) {
-             //Creating an object of Inventory Items, in order to switch to the new values of this item
-             InventoryItems x = new InventoryItems(NewName,NewSerial,NewPrice);
-             x.ModifyName(NewName);
-             x.ModifySerialNumber(NewSerial);
-             x.ModifyPrice(NewPrice);
-             controller.ModifyInformation(x, index);
-             Dialog("The item was modified correctly!");
-             ((Stage) (((Button) actionEvent.getSource()).getScene().getWindow())).close();
-         }
+        //If passes all the test cases, and there is not problems; we are ready to modify the item
+        if(check) {
+            //Creating an object of Inventory Items, in order to switch to the new values of this item
+            InventoryItems x = new InventoryItems(NewName,NewSerial,NewPrice);
+            x.ModifyName(NewName);
+            x.ModifySerialNumber(NewSerial);
+            x.ModifyPrice(NewPrice);
+            controller.ModifyInformation(x, index);
+            Dialog("The item was modified correctly!");
+            ((Stage) (((Button) actionEvent.getSource()).getScene().getWindow())).close();
+        }
     }//Working
 
+
+    @FXML
     public void Close(ActionEvent actionEvent) {
         ((Stage)(((Button)actionEvent.getSource()).getScene().getWindow())).close();
     }
