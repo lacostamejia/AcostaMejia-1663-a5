@@ -208,7 +208,7 @@ public class InventoryController implements Initializable {
                         W.printf("%-20s%-20s%-20s\n",list.get(i).SavePrice(),list.get(i).SaveSerialNumber(),list.get(i).SaveName());
                     }
                     W.close(); //Closing write
-                    Dialog("The list was saved successfully on your computer! The name of the inventory is " + file.getName());
+                    Dialog("The Inventory was saved successfully on your computer! The name of the inventory is " + file.getName());
 
                 }//Working
 
@@ -222,7 +222,7 @@ public class InventoryController implements Initializable {
                         BW.printf("<div><p>%s           %s          %s</p><div>\n",list.get(i).SavePrice(),list.get(i).SaveSerialNumber(),list.get(i).SaveName());
                     }
 
-                    Dialog("The list was saved successfully on your computer! The name of the inventory is " + file.getName());
+                    Dialog("The Inventory was saved successfully on your computer! The name of the inventory is " + file.getName());
                     BW.close();
                 }
                 //The user selected JSON
@@ -239,6 +239,7 @@ public class InventoryController implements Initializable {
                     W.write(obj.toString()); //Writing the object
 
                     W.close(); //Close writer
+                    Dialog("The Inventory was saved successfully on your computer! The name of the inventory is " + file.getName());
 
                     //Used to test
                     /*
@@ -258,7 +259,7 @@ public class InventoryController implements Initializable {
         }
     }
     @FXML
-    public void LoadInventory(ActionEvent actionEvent) throws FileNotFoundException {
+    public void LoadInventory(ActionEvent actionEvent) throws IOException {
 
         //Here we are getting the stage that we are currently using; therefore, we are going to create a new Window from it
         Window stage = MainWindow.getScene().getWindow();
@@ -271,9 +272,23 @@ public class InventoryController implements Initializable {
             FileReader reader = new FileReader(file);
 
             if(fileChooser.getSelectedExtensionFilter().getDescription().equals("TSV")){
-                System.out.println("Hola");
+                String nameReaded = ""; //Used to save the name that can come with spaces
+                BufferedReader bf = new BufferedReader(reader);
+                String st = bf.readLine(); //We don't read the first line
+                list.clear(); //We clear the list so we are going to show a new inventory
+                while((st = bf.readLine()) != null) {
+                    String[] information = st.split("\\s+");
+                    for(int i = 2; i < information.length; i++){
+                        nameReaded = nameReaded + information[i] + " ";
+                    }
+                    list.add(new InventoryItems(nameReaded, information[1], information[0]));
+                    nameReaded = ""; //We clear the nameReaded variable to read the other name again
+                }
+                reader.close();
+                Dialog("The Inventory was loaded correctly " + file.getName());
 
-            }
+            }//Working
+            
             else if(fileChooser.getSelectedExtensionFilter().getDescription().equals("HTML")){
 
             }
@@ -285,6 +300,7 @@ public class InventoryController implements Initializable {
                 //Fix getting null
 
             }
+            table.refresh(); //We refresh the table to show the new values.
 
 
     }
