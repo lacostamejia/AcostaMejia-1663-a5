@@ -1,15 +1,15 @@
 package Assignment;
 
-import java.util.Map;
+import java.util.ArrayList;
 
 public class Inventory {
-    private Map<String,InventoryItems> descriptor;
+    private ArrayList<InventoryItems> Inventory;
 
-    public Map<String, InventoryItems> getDescriptor() {
-        return descriptor;
+    public ArrayList<InventoryItems> getDescriptor() {
+        return Inventory;
     }
 
-    public void setDescriptor(Map<String, InventoryItems> descriptor) {
-        this.descriptor = descriptor;
+    public void setDescriptor(ArrayList<InventoryItems> Inventory) {
+        this.Inventory = Inventory;
     }
 }

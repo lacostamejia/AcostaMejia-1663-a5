@@ -216,10 +216,8 @@ public class InventoryController implements Initializable {
                 //Fix the spaces to print in HTML
                 else if(fileChooser.getSelectedExtensionFilter().getDescription().equals("HTML")){
                     PrintWriter BW = new PrintWriter(file);
-                    BW.printf("<div><h1>%s          %s           %s</h1><div>","Value","Serial Number","Name");
-
                     for (int i = 0; i < list.size(); i++) {
-                        BW.printf("<div><p>%s           %s          %s</p><div>\n",list.get(i).SavePrice(),list.get(i).SaveSerialNumber(),list.get(i).SaveName());
+                        BW.printf("<div><p>%s&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%s%s</p><div>\n",list.get(i).SavePrice(),list.get(i).SaveSerialNumber(),list.get(i).SaveName());
                     }
 
                     Dialog("The Inventory was saved successfully on your computer! The name of the inventory is " + file.getName());
@@ -288,18 +286,26 @@ public class InventoryController implements Initializable {
                 Dialog("The Inventory was loaded correctly " + file.getName());
 
             }//Working
-            
+
             else if(fileChooser.getSelectedExtensionFilter().getDescription().equals("HTML")){
 
             }
             else if(fileChooser.getSelectedExtensionFilter().getDescription().equals("JSON")){
-                System.out.println("Hola");
+                list.clear();
                 Gson gson = new Gson();
-                InventoryItems inventory = gson.fromJson(reader,InventoryItems.class);
-                System.out.println(inventory);
-                //Fix getting null
+                Inventory inventory = gson.fromJson(reader,Inventory.class);
+                for(int i = 0; i < inventory.getDescriptor().size(); i++){
 
-            }
+                    String name  = inventory.getDescriptor().get(i).getName();
+                    String price = inventory.getDescriptor().get(i).getPrice();
+                    String serial = inventory.getDescriptor().get(i).getSerial();
+
+                    list.add(new InventoryItems(name,serial,price));
+
+                }
+                Dialog("The Inventory was loaded correctly " + file.getName());
+            }//Working
+
             table.refresh(); //We refresh the table to show the new values.
 
 
