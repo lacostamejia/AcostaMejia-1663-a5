@@ -1,7 +1,6 @@
 package Assignment;
 
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableArray;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -11,6 +10,14 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+/*
+ *  UCF COP3330 Summer 2021 Assignment 5 Solution
+ *  Copyright 2021 Luis Andres Acosta Mejia
+ */
+
 
 public class NewItemController {
 
@@ -88,23 +95,17 @@ public class NewItemController {
             alert.showAndWait();
             NewItemSerialNumber.clear();
         }
+        else if(SymbolsInSerial(NewItemSerialNumber.getText())){
+            alert.setTitle("Error!");
+            alert.setContentText("Error! There is a special character in the serial number.");
+            alert.showAndWait();
+            NewItemSerialNumber.clear();
+        }
         else {
                 //If we don't detect any problems; then we are able to do this back
                 items.add(new InventoryItems(NewItemName.getText(), NewItemSerialNumber.getText(), price = "$" + NewItemPrice.getText()));
 
-              /*  //Checking if there was a new item added with the same serial number
-                if(CheckItemNewRepeatedSerial() == false){
-                    alert.setTitle("Error!");
-                    alert.setContentText("Error! There is an item that you just added to the list, which already has this serial number");
-                    alert.showAndWait();
-                    NewItemSerialNumber.clear();
-                }
-                //Then we passed all the cases of possible errors.
-                else {
-
-               */
                     Dialog("The Item was added succesfully!");
-                    System.out.println(items.toString());
                     NewItemName.clear();
                     NewItemPrice.clear();
                     NewItemSerialNumber.clear();
@@ -141,8 +142,8 @@ public class NewItemController {
             }
         }
         return true;
-    }
-    //Check this function
+    }//Completed
+
     public boolean CheckItemNewRepeatedSerial(){
         for(int i=0;i<items.size();i++){
             //Checking if the previous items or the new added items has the same serial number.
@@ -152,8 +153,14 @@ public class NewItemController {
             }
         }
         return true;
-    }
+    } //Completed
 
+    public boolean SymbolsInSerial(String x){
+
+        Pattern pattern = Pattern.compile("[^a-zA-Z0-9]");
+        Matcher matcher = pattern.matcher(x);
+        return matcher.find(); //Returning yes if found a Symbol
+    }//Completed
 
     //Here we are receiving the information of the previous list.
     public void ReceivePreviousItemInformation(ObservableList <InventoryItems> x){ //Here is a function to do a communication between scenes which will receive the information from another class with all the lists created.

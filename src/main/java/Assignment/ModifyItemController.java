@@ -10,6 +10,14 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+
+/*
+ *  UCF COP3330 Summer 2021 Assignment 5 Solution
+ *  Copyright 2021 Luis Andres Acosta Mejia
+ */
 
 public class ModifyItemController {
 
@@ -20,19 +28,18 @@ public class ModifyItemController {
 
     private Alert alert = new Alert(Alert.AlertType.ERROR); //Here we are creating an alert to be used in any error interaction
 
-    ObservableList<InventoryItems> Modify = FXCollections.observableArrayList();
-    int index;
+    ObservableList<InventoryItems> Modify = FXCollections.observableArrayList(); //Carries all the previous items, and the item modified.
+    int index; //Carries the index of the item to be modified
 
+    //Loading information of the main window
     FXMLLoader loader = new FXMLLoader(getClass().getResource("Inventory.fxml"));
     Parent root = loader.load();
     InventoryController controller = loader.getController();
 ;
 
     public ModifyItemController() throws IOException {
-        //Receiving all the list information.
+        //Receiving all the previous list information, we need this since we have to verify there isn't any duplicate with the serial number
         controller.SendItemInformation(Modify);
-        System.out.println(Modify);
-        System.out.println(index);
     }
 
     @FXML
@@ -43,7 +50,7 @@ public class ModifyItemController {
         String NewPrice = Modify.get(index).getPrice(); //Starts with the initial price.
         String NewSerial = Modify.get(index).getSerial(); //Starts with the initial serial.
 
-        boolean check = true;
+        boolean check = true; //This is variable used to check if there is an error case in our verification of the name, serial, and price.
 
         //Let's check if the user type some value to modify just the name
         if(ModifiedNameItem.getText().isEmpty() == false){
@@ -73,12 +80,44 @@ public class ModifyItemController {
                 check = true;
             }
         }
-        if(ModifiedSerialItem.getText().isEmpty() == false){
-            NewSerial = ModifiedSerialItem.getText();
-            check = true;
+        if(ModifiedSerialItem.getText().isEmpty() == false) {
+            //Checking if the serial number has the format XXXXXXXXX (10 digits letters or digits).
 
+            if (ModifiedSerialItem.getText().length() != 10) {
+                alert.setTitle("Error!");
+                alert.setContentText("Error! The serial number of the item has to have the format XXXXXXXXX (10 digits letters or digits).");
+                alert.showAndWait();
+                ModifiedNameItem.clear();
+                check = false;
+            }
+            //Checking if the Serial number has a symbol, which is an error.
+            else if(SymbolsInSerial(ModifiedSerialItem.getText())){
+                alert.setTitle("Error!");
+                alert.setContentText("Error! The serial number can't contain special characters (Symbols).");
+                alert.showAndWait();
+                ModifiedSerialItem.clear();
+                check = false;
+            }
+            else {
+                //Here we are checking if the serial number already exists in an item
+                for (int i = 0; i < Modify.size(); i++) {
+                    if (Modify.get(i).getSerial().equals(ModifiedSerialItem.getText())) {
+                        alert.setTitle("Error!");
+                        alert.setContentText("Error! This serial number already exists in an item, please change it.");
+                        alert.showAndWait();
+                        ModifiedSerialItem.clear();
+                        check = false;
+                        break; //If we found a duplicate, we are going to break the searching for duplicates.
+                    }
+                    //If it doesn't exist yet, we are going to save this serial number
+                    else {
+                        NewSerial = ModifiedSerialItem.getText();
+                        check = true;
+                    }
+                }
+            }
         }
-        if(ModifiedNameItem.getText().isEmpty() && ModifiedPriceItem.getText().isEmpty() && ModifiedSerialItem.getText().isEmpty()){
+        else if(ModifiedNameItem.getText().isEmpty() && ModifiedPriceItem.getText().isEmpty() && ModifiedSerialItem.getText().isEmpty()){
             alert.setTitle("Error!");
             alert.setContentText("Error! There is nothing new to modify!");
             alert.showAndWait();
@@ -86,7 +125,7 @@ public class ModifyItemController {
         }
 
         //If passes all the test cases, and there is not problems; we are ready to modify the item
-        if(check) {
+        else if (check) {
             //Creating an object of Inventory Items, in order to switch to the new values of this item
             InventoryItems x = new InventoryItems(NewName,NewSerial,NewPrice);
             x.ModifyName(NewName);
@@ -98,16 +137,17 @@ public class ModifyItemController {
         }
     }//Working
 
-
     @FXML
     public void Close(ActionEvent actionEvent) {
         ((Stage)(((Button)actionEvent.getSource()).getScene().getWindow())).close();
     }
 
+    //Function to receive the index of the item to be modified in the list
     public void ReceiveIndexToModify(int x){
         index = x;
     }//Completed
 
+    //Function to send new changes messages
     public void Dialog(String x){ //This is a function to call a dialog!
         //Creating a dialog
         Dialog<String> dialog = new Dialog<String>();
@@ -120,4 +160,12 @@ public class ModifyItemController {
         dialog.getDialogPane().getButtonTypes().add(type);
         dialog.showAndWait(); //Showing the dialog
     } //Completed
+
+    //Function to check symbols in the serial number
+    public boolean SymbolsInSerial(String x){
+
+        Pattern pattern = Pattern.compile("[^a-zA-Z0-9]");
+        Matcher matcher = pattern.matcher(x);
+        return matcher.find(); //Returning yes if found a Symbol
+    }//Completed
 }

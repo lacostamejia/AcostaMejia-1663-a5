@@ -17,6 +17,9 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import java.io.*;
 import java.net.URL;
@@ -53,11 +56,15 @@ public class InventoryController implements Initializable {
     @FXML
     public TableColumn<InventoryItems, String> name;
 
+    //Used the carry all the information of the items using InventoryItems class
      public static ObservableList<InventoryItems> list = FXCollections.observableArrayList(new InventoryItems("Xbox One","AXB124AXY3","$399.00"),new InventoryItems("Samsung TV","S40AZBDE47","$599.99"));
+
+     //Used to carry all the information of the items using Inventory Items class but only the ones we are looking to search for.
      public static ObservableList<InventoryItems> SearchItems = FXCollections.observableArrayList();
 
     @FXML
     public void SearchItem(ActionEvent event) {
+
         //Checking if the item to search text is empty
         if(ItemToSearch.getText().isEmpty()){
             alert.setTitle("Error!");
@@ -65,6 +72,7 @@ public class InventoryController implements Initializable {
             alert.showAndWait();
         }
         //We are searching for name now.
+        //Searching for name
         else if(SelectionSearch.getSelectionModel().getSelectedItem().equals("Name")){
 
             SearchItems.clear(); //We have to clear the list before using it in the other type of search.
@@ -72,14 +80,16 @@ public class InventoryController implements Initializable {
             for(int i = 0; i < list.size(); i++){
                 //We found the name
                 if(list.get(i).FindName().equals(ItemToSearch.getText())){
-                    SearchItems.setAll(list.get(i));
+                    SearchItems.setAll(list.get(i)); //We are adding it to the list
                 }
             }
+            //If the list is not empty; they found a value
             if(SearchItems.isEmpty() == false){
-                table.setItems(SearchItems);
+                table.setItems(SearchItems); //Then we are going to display the items searched
                 table.refresh();
                 Dialog("These are items found by this name on the inventory.");
             }
+            //If not; there wasn't any item found with the name
             else{
                 alert.setTitle("Error!");
                 alert.setContentText("Error! There isn't any item in the inventory with this name '" + ItemToSearch.getText() + "'.");
@@ -87,6 +97,8 @@ public class InventoryController implements Initializable {
             }
             ItemToSearch.clear(); //Clear the input text.
         }
+
+        //Searching for serial number
         else if(SelectionSearch.getSelectionModel().getSelectedItem().equals("Serial Number")){
 
             SearchItems.clear(); //We have to clear the list before using it in the other type of search.
@@ -94,10 +106,10 @@ public class InventoryController implements Initializable {
             for(int i = 0; i < list.size(); i++){
                 //We found the name
                 if(list.get(i).FindSerialNumber().equals(ItemToSearch.getText())){
-                    SearchItems.setAll(list.get(i));
+                    SearchItems.setAll(list.get(i)); //Adding to the list
                 }
             }
-            //We are able to search since there are items in the list
+            //We are able to display since there are items in the list found
             if(SearchItems.isEmpty() == false){
                 table.setItems(SearchItems);
                 table.refresh();
@@ -114,12 +126,15 @@ public class InventoryController implements Initializable {
 
     @FXML
     public void ResetSearch(ActionEvent actionEvent) {
+        //Here the user will be able to reset the original list from the searching function
         table.setItems(list);
         table.refresh();
     }//Working
 
     @FXML
     public void ModifyItem(ActionEvent event) {
+
+        //Loading new Window to modify the item
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("ModifyItem.fxml"));
             Parent root = (Parent) loader.load();
@@ -138,7 +153,6 @@ public class InventoryController implements Initializable {
                 Stage stage = new Stage();
                 stage.setScene(new Scene(root));
                 stage.setTitle("Modify Item");
-                // if(Show_List();)
                 stage.show();
             }
         } catch (IOException e) {
@@ -148,6 +162,7 @@ public class InventoryController implements Initializable {
 
     @FXML
     public void RemoveItem(ActionEvent actionEvent) {
+        //Checking if the user didn't select any item of the inventory to remove
         if(table.getSelectionModel() == null){
             alert.setTitle("Error!");
             alert.setContentText("Error! Select an item first");
@@ -155,20 +170,22 @@ public class InventoryController implements Initializable {
         }
         else{
             list.remove(table.getSelectionModel().getSelectedIndex()); //Removing it from the list
-            table.refresh();
+            table.refresh(); //Refreshing the list
             Dialog("The item was deleted successfully!");
         }
     }//Working
 
     @FXML
     public void NewItem(ActionEvent event) {
+
+        //Loading a new window to add a new item
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("NewItem.fxml"));
             Parent root = (Parent) loader.load();
 
             //Working
            NewItemController controller = loader.getController();
-           controller.ReceivePreviousItemInformation(list);
+           controller.ReceivePreviousItemInformation(list); //Sending the current list to check if they are duplicates.
 
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
@@ -218,19 +235,27 @@ public class InventoryController implements Initializable {
                 else if(fileChooser.getSelectedExtensionFilter().getDescription().equals("HTML")){
 
                     PrintWriter BW = new PrintWriter(file);
-                   //BW.printf("table { font-family: arial, sans-serif;" + "border-collapse: collapse;" + "width: 100%;");
-                    BW.printf("<div><h1 align = center> Inventory </h1></div>");
-                    BW.printf("<table border = 1>");
-                    BW.printf("<tr><th>Price</th><th>Serial Number</th><th>Name</th><tr>");
+
+                    //Here we are writing HTML code to setup the url and design
+                    BW.printf("<html>");
+                    BW.printf("<body>");
+                    BW.printf("<h1 align = center> Inventory </h1>"); //Header of the website
+                    BW.printf("<table align = center border = 1 style = background-color:#e0e0e0 cellpadding = 5 cellspacing = 5>"); //Table features such as border,  align to the center of the website and background color
+
+                    //Here we are printing the headers of the table
+                    BW.printf("<tr><th><font size = 5 >Price</th><th><font size = 5 >Serial Number</th><th><font size = 5 >Name</th><tr>");
                     for (int i = 0; i < list.size(); i++) {
-                        BW.printf("<tr><td>" + list.get(i).getPrice() + "</td><td>" + list.get(i).getSerial()+ "</td><td>" + list.get(i).getName() + "</td></tr>");
+                        //Here we are printing the other values to insert inside the table
+                        BW.printf("<tr><td><font size = 4>" + list.get(i).SavePrice() + "</td><td><font size = 4>" + list.get(i).SaveSerialNumber()+ "</td><td><font size = 4>" + list.get(i).SaveName() + "</td></tr>");
 
                     }
                     BW.printf("</table>");
+                    BW.printf("</body>");
+                    BW.printf("</html>");
 
                     Dialog("The Inventory was saved successfully on your computer! The name of the inventory is " + file.getName());
                     BW.close();
-                } //Working - Fix for design.
+                } //Working
 
                 //The user selected JSON
                 else if(fileChooser.getSelectedExtensionFilter().getDescription().equals("JSON")){
@@ -248,13 +273,6 @@ public class InventoryController implements Initializable {
                     W.close(); //Close writer
                     Dialog("The Inventory was saved successfully on your computer! The name of the inventory is " + file.getName());
 
-                    //Used to test
-                    /*
-                    JSONArray jsonArray = obj.getJSONArray("Inventory");
-                    for(int i = 0; i < jsonArray.length(); i++){
-                           System.out.println(jsonArray.getJSONObject(i)) //Printing each item information
-                    }
-                    */
 
                 }//Working
 
@@ -263,7 +281,7 @@ public class InventoryController implements Initializable {
 
             }
         }
-    } //Working check for bugs.
+    } //Working
     @FXML
     public void LoadInventory(ActionEvent actionEvent) throws IOException {
 
@@ -278,6 +296,8 @@ public class InventoryController implements Initializable {
             FileReader reader = new FileReader(file);
 
             if(fileChooser.getSelectedExtensionFilter().getDescription().equals("TSV")){
+
+
                 String nameReaded = ""; //Used to save the name that can come with spaces
                 BufferedReader bf = new BufferedReader(reader);
                 String st = bf.readLine(); //We don't read the first line
@@ -287,40 +307,68 @@ public class InventoryController implements Initializable {
                     for(int i = 2; i < information.length; i++){
                         nameReaded = nameReaded + information[i] + " ";
                     }
-                    list.add(new InventoryItems(nameReaded, information[1], information[0]));
+                    //Here we are creating an instance of the class to load new values
+                    InventoryItems x = new InventoryItems("","","");
+
+                    x.LoadName(nameReaded); //Loading name
+                    x.LoadSerial(information[1]); //Loading serial
+                    x.LoadPrice(information[0]); //Loading price
+
+                    list.add(x); //Adding this new class to the list
+
                     nameReaded = ""; //We clear the nameReaded variable to read the other name again
                 }
+
                 reader.close();
                 Dialog("The Inventory was loaded correctly " + file.getName());
 
             }//Working
 
-            //Fix this bug, check how to implement jsoup for parsing HTML tables
             else if(fileChooser.getSelectedExtensionFilter().getDescription().equals("HTML")){
-                org.jsoup.nodes.Document doc = Jsoup.connect(file.toString()).get();
-                org.jsoup.select.Elements rows = doc.select("tr");
-                for(org.jsoup.nodes.Element row :rows)
-                {
-                    org.jsoup.select.Elements columns = row.select("td");
-                    for (org.jsoup.nodes.Element column:columns)
-                    {
-                        System.out.print(column.text());
-                    }
-                    System.out.println();
-                }
+                list.clear();
 
-            }
+                Document htmlDoc = null;
+                htmlDoc = Jsoup.parse(new File(file.getPath()), "ISO-8859-1");
+
+                Element table = htmlDoc.select("table").get(0);
+                Elements rows = table.select("tr");
+
+                for(int i = 2; i < rows.size(); i++){
+                    Element row = rows.get(i);
+                    Elements cols = row.select("td");
+
+                    //Here we are creating an instance of the class to load new values
+                    InventoryItems x = new InventoryItems("","","");
+
+                    x.LoadName(cols.get(2).text()); //Loading Name
+                    x.LoadSerial(cols.get(1).text()); //Loading Serial
+                    x.LoadPrice(cols.get(0).text()); //Loading Price
+
+                    list.add(x); //Adding to the list
+                }
+                Dialog("The Inventory was loaded correctly " + file.getName());
+
+            }//Working
+
+
             else if(fileChooser.getSelectedExtensionFilter().getDescription().equals("JSON")){
                 list.clear();
                 Gson gson = new Gson();
                 Inventory inventory = gson.fromJson(reader,Inventory.class);
                 for(int i = 0; i < inventory.getDescriptor().size(); i++){
 
+                    //Here we are creating an instance of the class to load new values
+                    InventoryItems x = new InventoryItems("","","");
+
                     String name  = inventory.getDescriptor().get(i).getName();
                     String price = inventory.getDescriptor().get(i).getPrice();
                     String serial = inventory.getDescriptor().get(i).getSerial();
 
-                    list.add(new InventoryItems(name,serial,price));
+                    x.LoadName(name);
+                    x.LoadSerial(serial);
+                    x.LoadPrice(price);
+
+                    list.add(x);
 
                 }
                 Dialog("The Inventory was loaded correctly " + file.getName());
@@ -329,7 +377,7 @@ public class InventoryController implements Initializable {
             table.refresh(); //We refresh the table to show the new values.
 
 
-    }
+    } //Completed
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -356,8 +404,10 @@ public class InventoryController implements Initializable {
 
         //Here we are initialize the search box.
 
+        //Here we are initializing the type of extensions used to save or load the inventory
         fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("TSV", "*.tsv"), new FileChooser.ExtensionFilter("HTML","*.html"), new FileChooser.ExtensionFilter("JSON","*.json"));
 
+        //We are setting first the Name to be the first option to search then te user can switch to serial number
         SelectionSearch.setValue("Name");
         SelectionSearch.setItems(itemsChoiceBox);
 
@@ -368,24 +418,27 @@ public class InventoryController implements Initializable {
         table.setItems(list);
         table.refresh();
 
-    }
+    } //Completed
 
-    //Check this part to associate each item with the list created.
+    //Receiving the information of new items created.
     public void ReceiveItemInformation(ObservableList <InventoryItems> x){ //Here is a function to do a communication between scenes which will receive the information from another class with all the lists created.
         list.addAll(x);
         table.setItems(list);
         table.refresh();
     }//Completed
 
+    //Sending information of the current list.
     public void SendItemInformation(ObservableList <InventoryItems> x){
         x.addAll(list);
     }//Working
 
+    //Here we are sending the information of the current list and index of the item selected to modify.
     public void ModifyInformation(InventoryItems x, int index){
         list.set(index,x);
         table.refresh();
     }//Working
 
+    //Used to display a message about new changes
     public void Dialog(String x){ //This is a function to call a dialog!
         //Creating a dialog
         Dialog<String> dialog = new Dialog<String>();

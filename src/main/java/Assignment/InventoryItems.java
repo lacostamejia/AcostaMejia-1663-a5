@@ -1,5 +1,11 @@
 package Assignment;
 
+/*
+ *  UCF COP3330 Summer 2021 Assignment 5 Solution
+ *  Copyright 2021 Luis Andres Acosta Mejia
+ */
+
+//This class holds all the information for each item
 public class InventoryItems {
 
      String name;
@@ -69,6 +75,13 @@ public class InventoryItems {
     }
 
     public String SavePrice(){ return price;}
+
+    //---------- Load Item -----------//
+    public void LoadName(String name){ this.name = name;}
+
+    public void LoadSerial(String serial){ this.serial = serial;}
+
+    public void LoadPrice(String price){ this.price = price;}
 
 
     @Override
