@@ -16,6 +16,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import org.json.JSONObject;
+import org.jsoup.Jsoup;
 
 import java.io.*;
 import java.net.URL;
@@ -215,14 +216,22 @@ public class InventoryController implements Initializable {
                 //The user selected HTML
                 //Fix the spaces to print in HTML
                 else if(fileChooser.getSelectedExtensionFilter().getDescription().equals("HTML")){
+
                     PrintWriter BW = new PrintWriter(file);
+                   //BW.printf("table { font-family: arial, sans-serif;" + "border-collapse: collapse;" + "width: 100%;");
+                    BW.printf("<div><h1 align = center> Inventory </h1></div>");
+                    BW.printf("<table border = 1>");
+                    BW.printf("<tr><th>Price</th><th>Serial Number</th><th>Name</th><tr>");
                     for (int i = 0; i < list.size(); i++) {
-                        BW.printf("<div><p>%s&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%s%s</p><div>\n",list.get(i).SavePrice(),list.get(i).SaveSerialNumber(),list.get(i).SaveName());
+                        BW.printf("<tr><td>" + list.get(i).getPrice() + "</td><td>" + list.get(i).getSerial()+ "</td><td>" + list.get(i).getName() + "</td></tr>");
+
                     }
+                    BW.printf("</table>");
 
                     Dialog("The Inventory was saved successfully on your computer! The name of the inventory is " + file.getName());
                     BW.close();
-                }
+                } //Working - Fix for design.
+
                 //The user selected JSON
                 else if(fileChooser.getSelectedExtensionFilter().getDescription().equals("JSON")){
                     //We declared the variable to write
@@ -249,13 +258,12 @@ public class InventoryController implements Initializable {
 
                 }//Working
 
-
             } catch (Exception ex) {
                 ex.printStackTrace();
 
             }
         }
-    }
+    } //Working check for bugs.
     @FXML
     public void LoadInventory(ActionEvent actionEvent) throws IOException {
 
@@ -287,7 +295,19 @@ public class InventoryController implements Initializable {
 
             }//Working
 
+            //Fix this bug, check how to implement jsoup for parsing HTML tables
             else if(fileChooser.getSelectedExtensionFilter().getDescription().equals("HTML")){
+                org.jsoup.nodes.Document doc = Jsoup.connect(file.toString()).get();
+                org.jsoup.select.Elements rows = doc.select("tr");
+                for(org.jsoup.nodes.Element row :rows)
+                {
+                    org.jsoup.select.Elements columns = row.select("td");
+                    for (org.jsoup.nodes.Element column:columns)
+                    {
+                        System.out.print(column.text());
+                    }
+                    System.out.println();
+                }
 
             }
             else if(fileChooser.getSelectedExtensionFilter().getDescription().equals("JSON")){

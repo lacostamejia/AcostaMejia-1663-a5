@@ -2,6 +2,9 @@ package Assignment;
 
 import java.util.ArrayList;
 
+
+//Created to load JSON file.
+
 public class Inventory {
     private ArrayList<InventoryItems> Inventory;
 
