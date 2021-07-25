@@ -1,4 +1,4 @@
-package Assignment;
+package ucf.assignments;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

@@ -31,5 +31,5 @@ javafx {
     modules = [ 'javafx.controls', 'javafx.fxml' ]
 }
 
-mainClassName = 'Assignment.App'
+mainClassName = 'ucf.assignments.App'
 

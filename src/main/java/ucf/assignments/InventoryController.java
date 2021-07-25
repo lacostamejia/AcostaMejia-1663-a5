@@ -1,4 +1,4 @@
-package Assignment;
+package ucf.assignments;
 
 import com.google.gson.Gson;
 import javafx.collections.FXCollections;

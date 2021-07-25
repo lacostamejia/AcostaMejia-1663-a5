@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="250.0" prefWidth="386.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Assignment.ModifyItemController">
+<AnchorPane prefHeight="250.0" prefWidth="386.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ucf.assignments.ModifyItemController">
    <children>
       <Button layoutX="106.0" layoutY="188.0" mnemonicParsing="false" onAction="#ModifyItem" prefHeight="30.0" prefWidth="62.0" text="Modify" />
 

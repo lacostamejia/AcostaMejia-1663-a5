@@ -1,4 +1,4 @@
-import Assignment.InventoryItems;
+import ucf.assignments.InventoryItems;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
