@@ -1,4 +1,6 @@
-# AcostaMejia-1234-a5
+# AcostaMejia-1234-a5 - Luis Andres Acosta Mejia
+
+#Instructions (How to use the program)
 
 #Add a new Item:
 -Click on the button that states "New Item"; then a new window will show requesting a name of this new item, a serial number, and a price.
