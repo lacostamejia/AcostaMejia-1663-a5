@@ -1,0 +1,90 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+class App{
++main()
++start()
+}
+class InventoryController{
+model: TDList
+'GUI functions'
+}
+
+
+
+class InventoryItems{
+name: String
+serial: String
+price: String
+
++getName()
++getPrice()
++getSerial()
+
++setName(String name)
++setSerial(String serial)
++setPrice(String price)
+
++ModifyName(String name)
++ModifySerialNumber(String serial)
++ModifyPrice(String price)
+
++FindName()
++FindSerialNumber()
+
++SaveName()
++SaveSerialNumber()
++SavePrice()
+
++LoadName()
++LoadSerial()
++LoadPrice()
+
+}
+
+
+class ModifyItemController{
+
+index: Integer
+Modify: ObservableList<InventoryItems>
+
++ModifyItem()
++Close()
++ReceiveIndexToModify()
++Dialog()
++SymbolInSerial()
+
+
+}
+
+class Inventory{
+Inventory: ArrayList<InventoryItems>
++getDescriptor()
++setDescriptor(ArrayList<InventoryItems>)
+}
+
+class NewItemController{
+items: ObservableList<InventoryItems>
+previousitems: ObservableList<InventoryItems>
+
++AddNewItem()
++Close()
++Dialog()
++CheckItemPreviousRepeatedSerial()
++CheckItemNewRepeatedSerial()
++SymbolInSerial()
++ReceivePreviousItemInformation()
+}
+
+
+org.javafx.Application <|-- App
+InventoryController -- App
+
+
+InventoryController *--InventoryItems
+InventoryController *-- Inventory
+InventoryController -- NewItemController
+InventoryController --  ModifyItemController
+
+
+
+@enduml
