@@ -42,7 +42,7 @@ public class NewItemController {
 
     //Used to save all the items new created
     ObservableList<InventoryItems> items = FXCollections.observableArrayList(); //Used to save all the tasks created in this controller
-
+    ObservableList<InventoryItems> actualItems = FXCollections.observableArrayList(); //Used to save all the current tasks created in this controller
     ObservableList<InventoryItems> previousitems = FXCollections.observableArrayList(); //Used to save all the tasks created from the previous main controller
 
     public NewItemController() throws IOException {
@@ -101,18 +101,28 @@ public class NewItemController {
             alert.showAndWait();
             NewItemSerialNumber.clear();
         }
+        else if(CheckItemNewRepeatedSerial() == false){
+            alert.setTitle("Error!");
+            alert.setContentText("Error! There is an item in the list already that has this serial number");
+            alert.showAndWait();
+            NewItemSerialNumber.clear();
+        }
         //Checking if the serial number has special symbols
         else if(SymbolsInSerial(NewItemSerialNumber.getText())){
             alert.setTitle("Error!");
-            alert.setContentText("Error! There is a special character in the serial number.");
+            alert.setContentText("Error! There is an item in the list already has this serial number");
             alert.showAndWait();
             NewItemSerialNumber.clear();
         }
         else {
                 //If we don't detect any problems; then we are able to do this back
-                items.add(new InventoryItems(NewItemName.getText(), NewItemSerialNumber.getText(), price = "$" + NewItemPrice.getText()));
-
+                    items.add(new InventoryItems(NewItemName.getText(), NewItemSerialNumber.getText(), price = "$" + NewItemPrice.getText())); //Creating new Item information
+                    actualItems.addAll(items); //Used to save all the actual items, in order to check for repeated serial numbers just added.
                     Dialog("The Item was added succesfully!");
+
+                    controller.ReceiveItemInformation(items); //Sending immediately the item information
+
+                    items.clear();
                     NewItemName.clear();
                     NewItemPrice.clear();
                     NewItemSerialNumber.clear();
@@ -121,10 +131,7 @@ public class NewItemController {
 
     @FXML
     public void Close(ActionEvent actionEvent) throws IOException {
-
-        //Sending back the information to the main controller
-        controller.ReceiveItemInformation(items);
-
+        //Closing the actual window.
         ((Stage)(((Button)actionEvent.getSource()).getScene().getWindow())).close();
     }//Completed
 
@@ -155,10 +162,10 @@ public class NewItemController {
     }//Completed
 
     public boolean CheckItemNewRepeatedSerial(){
-        for(int i=0;i<items.size();i++){
+        for(int i=0;i<actualItems.size();i++){
             //Checking if the previous items or the new added items has the same serial number.
-            if(items.get(i).getSerial().equals(NewItemSerialNumber.getText())){
-                items.remove(i); //We removed from the items created so it won't be added.
+            if(actualItems.get(i).getSerial().equals(NewItemSerialNumber.getText())){
+                actualItems.remove(i); //We removed from the items created so it won't be added.
                 return false;
             }
         }

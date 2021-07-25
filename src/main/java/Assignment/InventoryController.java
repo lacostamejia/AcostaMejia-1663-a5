@@ -63,7 +63,7 @@ public class InventoryController implements Initializable {
     public TableColumn<InventoryItems, String> name;
 
     //Used the carry all the information of the items using InventoryItems class
-     public static ObservableList<InventoryItems> list = FXCollections.observableArrayList(new InventoryItems("Xbox One","AXB124AXY3","$399.00"),new InventoryItems("Samsung TV","S40AZBDE47","$599.99"));
+     public static ObservableList<InventoryItems> list = FXCollections.observableArrayList();
 
      //Used to carry all the information of the items using Inventory Items class but only the ones we are looking to search for.
      public static ObservableList<InventoryItems> SearchItems = FXCollections.observableArrayList();
@@ -71,8 +71,14 @@ public class InventoryController implements Initializable {
     @FXML
     public void SearchItem(ActionEvent event) {
 
+        //Checking if the list is empty
+        if(list.isEmpty()){
+            alert.setTitle("Error!");
+            alert.setContentText("Error! There isn't any item in the list to search");
+            alert.showAndWait();
+        }
         //Checking if the item to search text is empty
-        if(ItemToSearch.getText().isEmpty()){
+        else if(ItemToSearch.getText().isEmpty()){
             alert.setTitle("Error!");
             alert.setContentText("Error! Please insert a value to search for in the table.");
             alert.showAndWait();
@@ -174,6 +180,13 @@ public class InventoryController implements Initializable {
             alert.setContentText("Error! Select an item first");
             alert.showAndWait();
         }
+        //Checking if the list is empty
+        else if(list.isEmpty()){
+            alert.setTitle("Error!");
+            alert.setContentText("Error! There isn't any item in the inventory to be deleted");
+            alert.showAndWait();
+        }
+        //If passes all the cases; the we can proceed to delete this item.
         else{
             list.remove(table.getSelectionModel().getSelectedIndex()); //Removing it from the list
             table.refresh(); //Refreshing the list
@@ -399,24 +412,6 @@ public class InventoryController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
 
 
-        //Check bug of filtering the value
-
-        /*
-        //Creating a graphic (image)
-        Image img = new Image(getClass().getResourceAsStream("/Assignment/AddItemImage.png"));
-        ImageView view = new ImageView(img);
-        view.setFitHeight(30);
-        NewItemBtn.setText(null);
-        view.setPreserveRatio(true);
-        NewItemBtn.setGraphic(view);
-
-         img = new Image(getClass().getResourceAsStream("/Assignment/RemoveItemImage.png"));
-         view = new ImageView(img);
-        view.setFitHeight(30);
-        RemoveBtn.setText(null);
-        view.setPreserveRatio(true);
-        RemoveBtn.setGraphic(view);
-        */
 
         //Here we are initialize the search box.
 
