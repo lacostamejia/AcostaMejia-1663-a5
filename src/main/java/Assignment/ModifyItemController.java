@@ -21,6 +21,8 @@ import java.util.regex.Pattern;
 
 public class ModifyItemController {
 
+    //This controller is used to Modify a specific item on the table.
+
     @FXML
     public TextField ModifiedNameItem;
     public TextField ModifiedSerialItem;
@@ -33,14 +35,14 @@ public class ModifyItemController {
 
     //Loading information of the main window
     FXMLLoader loader = new FXMLLoader(getClass().getResource("Inventory.fxml"));
-    Parent root = loader.load();
-    InventoryController controller = loader.getController();
+    Parent root = loader.load(); //Loading the parent rood to obtain the previous values
+    InventoryController controller = loader.getController(); //Calling the controller of the main window
 ;
 
     public ModifyItemController() throws IOException {
         //Receiving all the previous list information, we need this since we have to verify there isn't any duplicate with the serial number
         controller.SendItemInformation(Modify);
-    }
+    } //Completed
 
     @FXML
     public void ModifyItem(ActionEvent actionEvent) {
@@ -128,17 +130,22 @@ public class ModifyItemController {
         else if (check) {
             //Creating an object of Inventory Items, in order to switch to the new values of this item
             InventoryItems x = new InventoryItems(NewName,NewSerial,NewPrice);
+
+            //Modifying the name, serial number and price
             x.ModifyName(NewName);
             x.ModifySerialNumber(NewSerial);
             x.ModifyPrice(NewPrice);
+
+            //Calling the method of this function, which will modify an exact item at an exact index of the list
             controller.ModifyInformation(x, index);
             Dialog("The item was modified correctly!");
             ((Stage) (((Button) actionEvent.getSource()).getScene().getWindow())).close();
         }
-    }//Working
+    }//Completed
 
     @FXML
     public void Close(ActionEvent actionEvent) {
+        //Closing the actual window.
         ((Stage)(((Button)actionEvent.getSource()).getScene().getWindow())).close();
     }
 
@@ -164,7 +171,7 @@ public class ModifyItemController {
     //Function to check symbols in the serial number
     public boolean SymbolsInSerial(String x){
 
-        Pattern pattern = Pattern.compile("[^a-zA-Z0-9]");
+        Pattern pattern = Pattern.compile("[^a-zA-Z0-9]"); //This is the pattern to check if there is a symbol or special sign in the serial number
         Matcher matcher = pattern.matcher(x);
         return matcher.find(); //Returning yes if found a Symbol
     }//Completed

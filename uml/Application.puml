@@ -5,7 +5,7 @@ class App{
 +start()
 }
 class InventoryController{
-model: TDList
+model: InventoryItems
 'GUI functions'
 }
 

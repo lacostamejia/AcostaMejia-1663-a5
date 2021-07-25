@@ -21,14 +21,13 @@ import java.util.regex.Pattern;
 
 public class NewItemController {
 
+    //This is the controller of the new window created to add new items to the Inventory
+
     String price;
     FXMLLoader loader = new FXMLLoader(getClass().getResource("Inventory.fxml"));
     Parent root = loader.load();
     InventoryController controller = loader.getController();
 
-    //We have to create an Observable list to add all these values
-    //private static  ObservableList<InventoryItems> list = new ObservableList<>() {
-    //};
 
     private Alert alert = new Alert(Alert.AlertType.ERROR); //Here we are creating an alert to be used in any error interaction
 
@@ -43,6 +42,7 @@ public class NewItemController {
 
     //Used to save all the items new created
     ObservableList<InventoryItems> items = FXCollections.observableArrayList(); //Used to save all the tasks created in this controller
+
     ObservableList<InventoryItems> previousitems = FXCollections.observableArrayList(); //Used to save all the tasks created from the previous main controller
 
     public NewItemController() throws IOException {
@@ -53,11 +53,15 @@ public class NewItemController {
     @FXML
     public void AddNewItem(ActionEvent event) {
 
+        //Here are some test cases used in order to identify some issues
+
+        //Check if the name is empty
         if (NewItemName.getText().isEmpty()) {
             alert.setTitle("Error!");
             alert.setContentText("Error! The name field is empty");
             alert.showAndWait();
 
+            //CHecking if the lenght of the name is less than 2 and more than 256 characters.
         } else if (NewItemName.getText().length() < 2 || NewItemName.getText().length() > 256) {
             alert.setTitle("Error!");
             alert.setContentText("Error! The name of the item has to be between 2 and 256 characters.");
@@ -76,6 +80,8 @@ public class NewItemController {
             alert.showAndWait();
             NewItemSerialNumber.clear(); //We clear this field, so the user can input a new serial number
         }
+
+        //Checking if the price is empty
         else if (NewItemPrice.getText().isEmpty()) {
             alert.setTitle("Error!");
             alert.setContentText("Error! The price field is empty");
@@ -88,13 +94,14 @@ public class NewItemController {
             alert.showAndWait();
             NewItemPrice.clear();
         }
-        //Working, check how to implement the new list items added.
+        //Checking if there is an item already in the inventory with this serial number
         else if(CheckItemPreviousRepeatedSerial() == false){
             alert.setTitle("Error!");
             alert.setContentText("Error! There is an item in the list already that has this serial number");
             alert.showAndWait();
             NewItemSerialNumber.clear();
         }
+        //Checking if the serial number has special symbols
         else if(SymbolsInSerial(NewItemSerialNumber.getText())){
             alert.setTitle("Error!");
             alert.setContentText("Error! There is a special character in the serial number.");
@@ -110,7 +117,8 @@ public class NewItemController {
                     NewItemPrice.clear();
                     NewItemSerialNumber.clear();
                 }
-        }
+        } //Completed
+
     @FXML
     public void Close(ActionEvent actionEvent) throws IOException {
 
@@ -135,7 +143,9 @@ public class NewItemController {
 
     //Function to check if the items have the same serial
     public boolean CheckItemPreviousRepeatedSerial(){
+
         for(int i=0;i<previousitems.size();i++){
+
             //Checking if the previous items or the new added items has the same serial number.
             if(previousitems.get(i).getSerial().equals(NewItemSerialNumber.getText())){
                 return false;
@@ -157,7 +167,7 @@ public class NewItemController {
 
     public boolean SymbolsInSerial(String x){
 
-        Pattern pattern = Pattern.compile("[^a-zA-Z0-9]");
+        Pattern pattern = Pattern.compile("[^a-zA-Z0-9]"); //Checking if has this pattern of a symbol or special sign.
         Matcher matcher = pattern.matcher(x);
         return matcher.find(); //Returning yes if found a Symbol
     }//Completed

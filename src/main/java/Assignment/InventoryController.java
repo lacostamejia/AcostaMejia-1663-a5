@@ -25,6 +25,12 @@ import java.io.*;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+
+/*
+ *  UCF COP3330 Summer 2021 Assignment 5 Solution
+ *  Copyright 2021 Luis Andres Acosta Mejia
+ */
+
 public class InventoryController implements Initializable {
 
     @FXML
@@ -299,9 +305,12 @@ public class InventoryController implements Initializable {
 
 
                 String nameReaded = ""; //Used to save the name that can come with spaces
+
                 BufferedReader bf = new BufferedReader(reader);
                 String st = bf.readLine(); //We don't read the first line
+
                 list.clear(); //We clear the list so we are going to show a new inventory
+
                 while((st = bf.readLine()) != null) {
                     String[] information = st.split("\\s+");
                     for(int i = 2; i < information.length; i++){
@@ -360,14 +369,21 @@ public class InventoryController implements Initializable {
                     //Here we are creating an instance of the class to load new values
                     InventoryItems x = new InventoryItems("","","");
 
+                    //Here we are loading the name
                     String name  = inventory.getDescriptor().get(i).getName();
+
+                    //Here we are loading the price
                     String price = inventory.getDescriptor().get(i).getPrice();
+
+                    //Here we are loading the serial number
                     String serial = inventory.getDescriptor().get(i).getSerial();
 
+                    //Here we are calling the methods of the InventoryItems class created to load
                     x.LoadName(name);
                     x.LoadSerial(serial);
                     x.LoadPrice(price);
 
+                    //Now we are adding this Item to the list.
                     list.add(x);
 
                 }
@@ -422,19 +438,21 @@ public class InventoryController implements Initializable {
 
     //Receiving the information of new items created.
     public void ReceiveItemInformation(ObservableList <InventoryItems> x){ //Here is a function to do a communication between scenes which will receive the information from another class with all the lists created.
-        list.addAll(x);
-        table.setItems(list);
-        table.refresh();
+        list.addAll(x); //Add all the information of the list with the Inventory Items created
+
+        table.setItems(list); //Setting the table
+
+        table.refresh(); //Refreshing the table
     }//Completed
 
     //Sending information of the current list.
     public void SendItemInformation(ObservableList <InventoryItems> x){
-        x.addAll(list);
+        x.addAll(list); //Here we are sending all the information of the current list to the list of the other controller window.
     }//Working
 
     //Here we are sending the information of the current list and index of the item selected to modify.
     public void ModifyInformation(InventoryItems x, int index){
-        list.set(index,x);
+        list.set(index,x); //Here we are setting at an exact index the new item modified.
         table.refresh();
     }//Working
 
